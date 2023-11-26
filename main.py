@@ -3,7 +3,7 @@ import requests
 from googleapiclient.discovery import build
 
 # Remplacez 'YOUR_API_KEY' par votre propre clé API
-API_KEY = 'AIzaSyBDNanaodW4Snwn5ZBC5r_NUurYuCvUl0k'
+API_KEY = ''
 
 # Remplacez 'CHANNEL_ID' par l'ID de la chaîne YouTube
 CHANNEL_ID = ''  # 
