@@ -5,10 +5,10 @@ from googleapiclient.discovery import build
 from googletrans import Translator
 
 # Remplacez 'YOUR_API_KEY' par votre propre clé API
-API_KEY = 'AIzaSyBDNanaodW4Snwn5ZBC5r_NUurYuCvUl0k'
+API_KEY = 'API_KEY'
 
 # Remplacez 'CHANNEL_ID' par l'ID de la chaîne YouTube
-CHANNEL_ID = 'UCTs3XgmNa0MaNBSc0kBa7QQ'  # Par exemple, 'UC_x5XG1OV2P6uZZ5FSM9Ttw'
+CHANNEL_ID = 'CHANNEL_ID'  # Par exemple, 'UC_x5XG1OV2P6uZZ5FSM9Ttw'
 
 # Créez un service YouTube Data API
 youtube = build('youtube', 'v3', developerKey=API_KEY)
