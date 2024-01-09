@@ -5,16 +5,13 @@ from googleapiclient.discovery import build
 from googletrans import Translator
 
 # Remplacez 'YOUR_API_KEY' par votre propre clé API
-API_KEY = 'AIzaSyBDNanaodW4Snwn5ZBC5r_NUurYuCvUl0k'
+API_KEY = 'API_KEY'
 
 # Remplacez 'CHANNEL_ID' par l'ID de la chaîne YouTube
-CHANNEL_ID = 'UCTs3XgmNa0MaNBSc0kBa7QQ'  # Par exemple, 'UC_x5XG1OV2P6uZZ5FSM9Ttw'
+CHANNEL_ID = 'CHANNEL_ID'
 
 # Créez un service YouTube Data API
 youtube = build('youtube', 'v3', developerKey=API_KEY)
-
-# Importez le module Translator de googletrans
-from googletrans import Translator
 
 # Fonction pour nettoyer le nom du répertoire
 def clean_directory_name(name):
@@ -36,7 +33,7 @@ if not os.path.exists(channel_directory):
 request = youtube.search().list(
     part='snippet',
     channelId=CHANNEL_ID,
-    maxResults=50,
+    maxResults=100,
     type='video'
 )
 
@@ -65,8 +62,6 @@ for video in videos:
 
         # Créez un répertoire pour chaque vidéo dans le dossier du nom du youtubeur
         video_directory = os.path.join(channel_directory, video_directory_name)
-
-        # Assurez-vous que le répertoire existe en le créant récursivement
         os.makedirs(video_directory, exist_ok=True)
 
         # Enregistrez le nom original de la vidéo dans le fichier texte et traduisez-le en anglais
@@ -78,12 +73,11 @@ for video in videos:
         with open(video_url_file_path, 'w', encoding='utf-8') as url_file:
             url_file.write(f"Nom original de la vidéo (FR) : {original_video_name}\n")
             url_file.write(f"Nom original de la vidéo (EN) : {translated_title}\n")
-            url_file.write(f"URL de la vidéo : https://www.youtube.com/watch?v={video_id}")
+            url_file.write(f"URL de la vidéo : https://www.youtube.com/watch?v={video_id}\n")
 
         # Téléchargez la miniature en résolution standard (SD)
         thumbnail_url = video['snippet']['thumbnails']['standard']['url'] if 'standard' in video['snippet']['thumbnails'] else video['snippet']['thumbnails']['high']['url']
         thumbnail_data = requests.get(thumbnail_url).content
-
         thumbnail_file_path = os.path.join(video_directory, 'thumbnail.jpg')
         with open(thumbnail_file_path, 'wb') as thumbnail_file:
             thumbnail_file.write(thumbnail_data)
@@ -105,9 +99,10 @@ for video in videos:
         minia_traduite_directory = os.path.join(video_directory, 'minia_traduite')
         os.makedirs(minia_traduite_directory, exist_ok=True)
 
-        # Enregistrez les liens des 5 vidéos les plus populaires associées au titre traduit
+        # Enregistrez les liens et les titres des 5 vidéos les plus populaires associées au titre traduit
         for related_video in related_videos_response['items']:
             related_video_id = related_video['id']['videoId']
+            related_video_title = related_video['snippet']['title']
             related_video_thumbnail_url = related_video['snippet']['thumbnails']['medium']['url']
 
             related_video_thumbnail_data = requests.get(related_video_thumbnail_url).content
@@ -117,6 +112,11 @@ for video in videos:
             with open(related_video_thumbnail_path, 'wb') as related_video_thumbnail_file:
                 related_video_thumbnail_file.write(related_video_thumbnail_data)
 
-            print(f"Enregistrement de la miniature associée : {related_video_id}")
+            # Écrivez le lien et le titre de la vidéo dans video_url.txt
+            with open(video_url_file_path, 'a', encoding='utf-8') as url_file:
+                url_file.write(f"Lien de la vidéo associée : https://www.youtube.com/watch?v={related_video_id}\n")
+                url_file.write(f"Titre de la vidéo associée (EN) : {related_video_title}\n")
+
+            print(f"Enregistrement du lien et du titre de la vidéo associée : {related_video_id}")
 
 print("Terminé !")
